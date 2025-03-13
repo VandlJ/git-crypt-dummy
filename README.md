@@ -74,7 +74,7 @@ Send **my-public-key.asc** securely via Bitwarden, encrypted email, etc.
 ## **3️⃣ Adding a New User to `git-crypt` (For Admins)**  
 This step is done by the **repository administrator**!  
 
-1️⃣ Import the new user’s public key:  
+1️⃣ Import the new user's public key:  
 ```sh
 gpg --import my-public-key.asc
 ```
@@ -173,6 +173,25 @@ If someone should **no longer have access**, you need to reinitialize encryption
    ```
 
 **Note:** Removing a user does not prevent access to already downloaded files, but it ensures they cannot pull new changes.
+
+## **8️⃣ Importing a GPG Key from Another Computer**  
+If you need to use the same GPG key across multiple computers, follow these steps:
+
+### **On the source computer (where the key was generated):**  
+```sh
+gpg --output private_key.pgp --armor --export-secret-key username@email
+```
+This exports your private key in an ASCII-armored format.
+
+### **On the destination computer (where you want to use the same key):**  
+```sh
+gpg --import private_key.pgp
+gpg --import my_pub_key.asc
+gpg -K
+```
+The last command (`gpg -K`) lists your secret keys to verify the import was successful.
+
+**⚠️ Security Warning:** Transferring private keys between computers should be done securely. Consider using encrypted channels or secure physical media, and delete the exported key file after importing it.
 
 ---
 
