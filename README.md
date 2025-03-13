@@ -192,4 +192,4 @@ If someone should **no longer have access**, you need to reinitialize encryption
 
 ---
 
-🔐 **Now your team can securely share the `.env` file without risking sensitive data leaks!**  
+🔐 **Now your team can securely share the `.env` file without risking sensitive data leaks!**
