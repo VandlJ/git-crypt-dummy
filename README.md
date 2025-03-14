@@ -209,6 +209,32 @@ The last command (`gpg -K`) lists your secret keys to verify the import was succ
 | Export an unlock key | `git-crypt export-key git-crypt-key` |
 | Reset encryption and remove a user | `git-crypt uninit && rm -rf .git-crypt && git-crypt init` |
 
----
+--- 
 
-🔐 **Now your team can securely share the `.env` file without risking sensitive data leaks!**
+## Setting up git-crypt on Windows WSL and IntelliJ
+1. Be sure that you have `git` installed on WSL and find its path:
+```sh
+which git
+```
+
+2. To avoid different interpretation of EOL symbol when pulling, set this attribute
+```sh
+git config --global core.autocrlf true
+```
+
+3. Configure IntelliJ to use WSL Git
+   - Open IntelliJ IDEA
+   - Go to File > Settings (or Ctrl+Alt+S)
+   - Navigate to Version Control > Git
+   - In the Path to Git executable field, enter the WSL Git path, for example:
+   ```sh
+   \\wsl$\Debian\usr\bin\git
+   ```
+   - Click Test to ensure IntelliJ can use the WSL Git
+
+4. To unlock the content of .env file, run this command on WSL:
+```sh
+git-crypt unlock
+```
+
+5. After unlocking the repository, the content of .env file will be automatically encrypted when pushing commit
