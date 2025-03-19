@@ -74,7 +74,7 @@ Send **my-public-key.asc** securely via Bitwarden, encrypted email, etc.
 ## **3️⃣ Adding a New User to `git-crypt` (For Admins)**  
 This step is done by the **repository administrator**!  
 
-1️⃣ Import the new user’s public key:  
+1️⃣ Import the new user's public key:  
 ```sh
 gpg --import my-public-key.asc
 ```
@@ -174,6 +174,25 @@ If someone should **no longer have access**, you need to reinitialize encryption
 
 **Note:** Removing a user does not prevent access to already downloaded files, but it ensures they cannot pull new changes.
 
+## **8️⃣ Importing a GPG Key from Another Computer**  
+If you need to use the same GPG key across multiple computers, follow these steps:
+
+### **On the source computer (where the key was generated):**  
+```sh
+gpg --output private_key.pgp --armor --export-secret-key username@email
+```
+This exports your private key in an ASCII-armored format.
+
+### **On the destination computer (where you want to use the same key):**  
+```sh
+gpg --import private_key.pgp
+gpg --import my_pub_key.asc
+gpg -K
+```
+The last command (`gpg -K`) lists your secret keys to verify the import was successful.
+
+**⚠️ Security Warning:** Transferring private keys between computers should be done securely. Consider using encrypted channels or secure physical media, and delete the exported key file after importing it.
+
 ---
 
 ## **📌 Summary of Key Commands**  
@@ -190,6 +209,32 @@ If someone should **no longer have access**, you need to reinitialize encryption
 | Export an unlock key | `git-crypt export-key git-crypt-key` |
 | Reset encryption and remove a user | `git-crypt uninit && rm -rf .git-crypt && git-crypt init` |
 
----
+--- 
 
-🔐 **Now your team can securely share the `.env` file without risking sensitive data leaks!**  
+## Setting up git-crypt on Windows WSL and IntelliJ
+1. Be sure that you have `git` installed on WSL and find its path:
+```sh
+which git
+```
+
+2. To avoid different interpretation of EOL symbol when pulling, set this attribute
+```sh
+git config --global core.autocrlf true
+```
+
+3. Configure IntelliJ to use WSL Git
+   - Open IntelliJ IDEA
+   - Go to File > Settings (or Ctrl+Alt+S)
+   - Navigate to Version Control > Git
+   - In the Path to Git executable field, enter the WSL Git path, for example:
+   ```sh
+   \\wsl$\Debian\usr\bin\git
+   ```
+   - Click Test to ensure IntelliJ can use the WSL Git
+
+4. To unlock the content of .env file, run this command on WSL:
+```sh
+git-crypt unlock
+```
+
+5. After unlocking the repository, the content of .env file will be automatically encrypted when pushing commit
